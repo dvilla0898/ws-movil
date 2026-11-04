@@ -1,0 +1,80 @@
+# Integración continua: se ejecuta en cada push a master y en cada Pull Request.
+# Si algún paso falla, el PR queda marcado en rojo (y, con la protección de rama
+# activada, no se puede hacer merge).
+#
+# IMPORTANTE: el nombre del job ("Análisis, tests y build") es el check que exige
+# el ruleset "proteger-master". Si lo cambias aquí, cámbialo también en el ruleset.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+# Si subes otro commit al mismo PR, cancela la ejecución anterior.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Análisis, tests y build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      # Mientras no exista el proyecto Flutter (pubspec.yaml), el check pasa en verde
+      # sin hacer nada, para que el primer PR (el que crea el proyecto) pueda entrar.
+      - name: Comprobar si ya existe el proyecto Flutter
+        id: proyecto
+        run: |
+          if [ -f pubspec.yaml ]; then
+            echo "existe=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "existe=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Aún no hay pubspec.yaml: se omiten los pasos de Flutter."
+          fi
+
+      # Android necesita Java 17 para compilar el APK.
+      - name: Instalar Java
+        if: steps.proyecto.outputs.existe == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Instalar Flutter (canal estable)
+        if: steps.proyecto.outputs.existe == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias
+        if: steps.proyecto.outputs.existe == 'true'
+        run: flutter pub get
+
+      # Falla si algún archivo no sigue el formato oficial de Dart.
+      # Para corregirlo en local: dart format .
+      - name: Formato
+        if: steps.proyecto.outputs.existe == 'true'
+        run: dart format --output=none --set-exit-if-changed .
+
+      # Errores, advertencias y reglas de estilo (analysis_options.yaml).
+      - name: Análisis estático
+        if: steps.proyecto.outputs.existe == 'true'
+        run: flutter analyze
+
+      - name: Tests
+        if: steps.proyecto.outputs.existe == 'true'
+        run: flutter test
+
+      # Comprueba que la app compila para Android.
+      - name: Build (APK debug)
+        if: steps.proyecto.outputs.existe == 'true'
+        run: flutter build apk --debug
