@@ -83,7 +83,7 @@ jobs:
       # el móvil (pestaña Actions → la ejecución → Artifacts). Caduca a los 7 días.
       - name: Guardar el APK
         if: steps.proyecto.outputs.existe == 'true'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ws-movil-pr-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
