@@ -52,7 +52,9 @@ void main() {
     expect(find.text('El usuario es obligatorio'), findsOneWidget);
   });
 
-  testWidgets('admin / admin123 entra al listado y puede salir', (tester) async {
+  testWidgets('admin / admin123 entra al listado y puede salir', (
+    tester,
+  ) async {
     await pumpApp(tester);
 
     await signIn(tester, username: 'admin', password: 'admin123');

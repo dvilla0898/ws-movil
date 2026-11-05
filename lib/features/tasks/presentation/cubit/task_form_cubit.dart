@@ -12,11 +12,7 @@ import '../../domain/task.dart';
 enum TaskFormStatus { loading, ready, saving, saved, loadFailure }
 
 class TaskFormState extends Equatable {
-  const TaskFormState({
-    required this.status,
-    this.initialTask,
-    this.failure,
-  });
+  const TaskFormState({required this.status, this.initialTask, this.failure});
 
   final TaskFormStatus status;
 
@@ -40,13 +36,12 @@ class TaskFormState extends Equatable {
 /// Cubit del formulario. Sirve para las dos pantallas: registrar y actualizar.
 class TaskFormCubit extends Cubit<TaskFormState> {
   /// Formulario vacío para registrar una tarea nueva.
-  TaskFormCubit.create({
-    required CreateTaskUseCase createTask,
-  }) : _createTask = createTask,
-       _getTask = null,
-       _updateTask = null,
-       _taskId = null,
-       super(const TaskFormState(status: TaskFormStatus.ready));
+  TaskFormCubit.create({required CreateTaskUseCase createTask})
+    : _createTask = createTask,
+      _getTask = null,
+      _updateTask = null,
+      _taskId = null,
+      super(const TaskFormState(status: TaskFormStatus.ready));
 
   /// Formulario para actualizar la tarea [taskId]. Llama a [load] al crearlo.
   TaskFormCubit.edit({

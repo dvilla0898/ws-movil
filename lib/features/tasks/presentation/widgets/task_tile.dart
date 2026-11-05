@@ -61,7 +61,9 @@ class TaskTile extends StatelessWidget {
                   overdue
                       ? '${strings.overdue} · ${MaterialLocalizations.of(context).formatMediumDate(due)}'
                       : strings.dueOn(
-                          MaterialLocalizations.of(context).formatMediumDate(due),
+                          MaterialLocalizations.of(
+                            context,
+                          ).formatMediumDate(due),
                         ),
                   style: TextStyle(
                     color: overdue ? theme.colorScheme.error : null,

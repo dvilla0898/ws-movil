@@ -85,7 +85,10 @@ class InMemoryTaskRepository implements TaskRepository {
   Future<Task?> findById(int id) async => tasks[id];
 
   @override
-  Future<Task> insert(TaskDetails details, {required DateTime createdAt}) async {
+  Future<Task> insert(
+    TaskDetails details, {
+    required DateTime createdAt,
+  }) async {
     final task = Task(
       id: _nextId++,
       title: details.title,

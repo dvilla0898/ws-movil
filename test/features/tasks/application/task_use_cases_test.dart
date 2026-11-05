@@ -87,7 +87,10 @@ void main() {
 
     expect(((await deleteTask(task.id)) as Ok<int>).value, task.id);
     expect(repository.tasks, isEmpty);
-    expect(((await deleteTask(task.id)) as Err).failure, const NotFoundFailure());
+    expect(
+      ((await deleteTask(task.id)) as Err).failure,
+      const NotFoundFailure(),
+    );
   });
 
   group('ListTasks', () {
@@ -102,8 +105,16 @@ void main() {
 
     test('ordena: pendientes primero, por fecha y luego prioridad', () async {
       await create('Sin fecha');
-      await create('Baja mañana', priority: TaskPriority.low, dueDate: DateTime(2026, 11, 5));
-      await create('Alta mañana', priority: TaskPriority.high, dueDate: DateTime(2026, 11, 5));
+      await create(
+        'Baja mañana',
+        priority: TaskPriority.low,
+        dueDate: DateTime(2026, 11, 5),
+      );
+      await create(
+        'Alta mañana',
+        priority: TaskPriority.high,
+        dueDate: DateTime(2026, 11, 5),
+      );
       await create('Hoy', dueDate: DateTime(2026, 11, 4));
       final done = await create('Hecha', dueDate: DateTime(2026, 11, 1));
       await ToggleTaskStatusUseCase(tasks: repository, clock: clock)(done.id);

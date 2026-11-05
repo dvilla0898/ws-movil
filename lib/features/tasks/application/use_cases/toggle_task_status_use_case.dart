@@ -21,7 +21,10 @@ class ToggleTaskStatusUseCase {
       final current = await _tasks.findById(id);
       if (current == null) return const Err(NotFoundFailure());
 
-      final updated = current.withDone(!current.isDone, updatedAt: _clock.now());
+      final updated = current.withDone(
+        !current.isDone,
+        updatedAt: _clock.now(),
+      );
       await _tasks.update(updated);
       return Ok(updated);
     });

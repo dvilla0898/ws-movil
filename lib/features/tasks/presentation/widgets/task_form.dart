@@ -150,9 +150,7 @@ class _TaskFormState extends State<TaskForm> {
               child: Text(
                 dueDate == null
                     ? strings.noDueDate
-                    : MaterialLocalizations.of(
-                        context,
-                      ).formatFullDate(dueDate),
+                    : MaterialLocalizations.of(context).formatFullDate(dueDate),
               ),
             ),
             if (dueDate != null)

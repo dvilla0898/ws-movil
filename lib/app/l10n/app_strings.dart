@@ -16,7 +16,8 @@ abstract class AppStrings {
 
   static const supportedLocales = [Locale('es'), Locale('en')];
 
-  static const LocalizationsDelegate<AppStrings> delegate = _AppStringsDelegate();
+  static const LocalizationsDelegate<AppStrings> delegate =
+      _AppStringsDelegate();
 
   static AppStrings of(BuildContext context) {
     return Localizations.of<AppStrings>(context, AppStrings)!;
@@ -94,9 +95,17 @@ abstract class AppStrings {
       NotFoundFailure() => taskNotFound,
       ValidationFailure(:final field, error: ValidationError.required) =>
         requiredField(fieldName(field)),
-      ValidationFailure(:final field, error: ValidationError.tooShort, :final limit) =>
+      ValidationFailure(
+        :final field,
+        error: ValidationError.tooShort,
+        :final limit,
+      ) =>
         tooShort(fieldName(field), limit ?? 0),
-      ValidationFailure(:final field, error: ValidationError.tooLong, :final limit) =>
+      ValidationFailure(
+        :final field,
+        error: ValidationError.tooLong,
+        :final limit,
+      ) =>
         tooLong(fieldName(field), limit ?? 0),
       _ => unexpectedError,
     };

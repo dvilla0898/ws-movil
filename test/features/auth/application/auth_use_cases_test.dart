@@ -34,7 +34,10 @@ void main() {
 
   group('SeedDefaultUserUseCase', () {
     test('crea admin una sola vez y sin guardar la contraseña', () async {
-      final again = await SeedDefaultUserUseCase(users: users, hasher: hasher)();
+      final again = await SeedDefaultUserUseCase(
+        users: users,
+        hasher: hasher,
+      )();
 
       expect((again as Ok<bool>).value, isFalse);
       expect(users.users, hasLength(1));

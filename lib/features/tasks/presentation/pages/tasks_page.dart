@@ -48,9 +48,9 @@ class _TasksView extends StatelessWidget {
   }
 
   Future<void> _openCreate(BuildContext context) async {
-    final saved = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => const CreateTaskPage()),
-    );
+    final saved = await Navigator.of(
+      context,
+    ).push<bool>(MaterialPageRoute(builder: (_) => const CreateTaskPage()));
     if (saved != true || !context.mounted) return;
     _showMessage(context, AppStrings.of(context).taskCreated);
     await context.read<TasksCubit>().load();

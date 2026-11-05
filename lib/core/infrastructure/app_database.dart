@@ -13,8 +13,7 @@ abstract final class AppDatabase {
   /// [factory] y [path] solo se indican en los tests (SQLite en memoria).
   static Future<Database> open({DatabaseFactory? factory, String? path}) async {
     final dbFactory = factory ?? databaseFactory;
-    final dbPath =
-        path ?? p.join(await dbFactory.getDatabasesPath(), fileName);
+    final dbPath = path ?? p.join(await dbFactory.getDatabasesPath(), fileName);
 
     return dbFactory.openDatabase(
       dbPath,

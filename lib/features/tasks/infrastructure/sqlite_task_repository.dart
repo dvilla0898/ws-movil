@@ -35,7 +35,10 @@ class SqliteTaskRepository implements TaskRepository {
   }
 
   @override
-  Future<Task> insert(TaskDetails details, {required DateTime createdAt}) async {
+  Future<Task> insert(
+    TaskDetails details, {
+    required DateTime createdAt,
+  }) async {
     final row = {
       'title': details.title,
       'description': details.description,
@@ -69,11 +72,7 @@ class SqliteTaskRepository implements TaskRepository {
 
   @override
   Future<bool> delete(int id) async {
-    final deleted = await _db.delete(
-      _table,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    final deleted = await _db.delete(_table, where: 'id = ?', whereArgs: [id]);
     return deleted > 0;
   }
 

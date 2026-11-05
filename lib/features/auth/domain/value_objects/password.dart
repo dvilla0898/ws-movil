@@ -25,7 +25,11 @@ final class Password {
     }
     if (raw.length > maxLength) {
       return const Err(
-        ValidationFailure('password', ValidationError.tooLong, limit: maxLength),
+        ValidationFailure(
+          'password',
+          ValidationError.tooLong,
+          limit: maxLength,
+        ),
       );
     }
     return Ok(Password._(raw));

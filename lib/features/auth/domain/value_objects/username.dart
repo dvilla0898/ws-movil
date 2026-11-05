@@ -27,7 +27,11 @@ final class Username {
     }
     if (value.length > maxLength) {
       return const Err(
-        ValidationFailure('username', ValidationError.tooLong, limit: maxLength),
+        ValidationFailure(
+          'username',
+          ValidationError.tooLong,
+          limit: maxLength,
+        ),
       );
     }
     return Ok(Username._(value));

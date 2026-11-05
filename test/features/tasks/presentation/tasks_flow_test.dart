@@ -29,7 +29,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Nueva tarea'), findsWidgets);
 
-    await tester.enterText(find.byKey(const Key('task_title')), 'Comprar fruta');
+    await tester.enterText(
+      find.byKey(const Key('task_title')),
+      'Comprar fruta',
+    );
     await tester.tap(find.text('Alta'));
     await tester.tap(find.byKey(const Key('task_submit')));
     await tester.pumpAndSettle();
