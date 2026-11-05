@@ -1,0 +1,19 @@
+# Reglas del análisis estático (`flutter analyze`). Parte de las recomendadas por
+# Flutter y añade algunas que ayudan a escribir código más claro.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+  language:
+    strict-casts: true
+
+linter:
+  rules:
+    - always_declare_return_types
+    - prefer_final_locals
+    - prefer_single_quotes
+    - sort_child_properties_last
+    - unawaited_futures
