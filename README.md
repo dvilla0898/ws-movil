@@ -66,6 +66,23 @@ flutter run          # abre la app
 | `flutter test` | Ejecuta los tests |
 | `flutter build apk --debug` | Compila un APK de prueba |
 
+### Probar en un móvil Android sin ordenador
+
+GitHub compila el APK por ti, así que basta con el navegador del móvil:
+
+- **Última versión (`master`)**: cada merge publica una *Release* con el APK
+  (workflow `.github/workflows/release.yml`).
+  1. Abre `github.com/dvilla0898/ws-movil` → **Releases** → la más reciente.
+  2. Descarga **`ws-movil.apk`** y ábrelo.
+  3. La primera vez, Android pedirá permitir instalar apps desde el navegador: acéptalo.
+- **Probar un PR antes del merge**: en el PR → pestaña **Checks** (o **Actions** → la ejecución)
+  → **Artifacts** → `ws-movil-pr-apk`. Se descarga un `.zip`: descomprímelo con el gestor de
+  archivos e instala el APK. Caduca a los 7 días.
+
+> ⚠️ Cada APK se firma con una clave de depuración distinta. Para instalar una versión nueva,
+> **desinstala antes la anterior** (se borran las tareas guardadas). Ejercicio: crear una clave
+> fija y guardarla como *secret* del repositorio para poder actualizar sin desinstalar.
+
 ## 4. Arquitectura
 
 ### La idea: el dominio en el centro
@@ -223,9 +240,13 @@ git push -u origin feature/nombre-del-cambio                 # 5. sube la rama
 
 El archivo `.github/workflows/ci.yml` se ejecuta en cada PR y en cada push a `master`:
 
-`formato` → `análisis estático` → `tests` → `build del APK`
+`formato` → `análisis estático` → `tests` → `build del APK` → `APK guardado como artifact`
 
 Si algo falla, el PR queda en rojo y no se puede fusionar.
+
+Además, `.github/workflows/release.yml` se ejecuta en cada push a `master` (es decir, al
+fusionar un PR): compila el APK en modo *release* y lo publica en **Releases** con la etiqueta
+`v<versión>-build.<número>`. La versión sale de `pubspec.yaml`.
 
 ## 10. Seguridad del repositorio
 

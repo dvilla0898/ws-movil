@@ -1,0 +1,74 @@
+# Publica el APK en "Releases" cada vez que se fusiona un cambio en master.
+# Desde el móvil: github.com/dvilla0898/ws-movil → Releases → ws-movil.apk.
+#
+# El APK va firmado con una clave de depuración que cambia en cada compilación:
+# para instalar una versión nueva hay que desinstalar antes la anterior.
+name: Release APK
+
+on:
+  push:
+    branches: [master]
+  # Permite lanzarlo a mano desde la pestaña Actions.
+  workflow_dispatch:
+
+# Necesario para crear la etiqueta y la Release.
+permissions:
+  contents: write
+
+# Si se fusionan dos PRs seguidos, no cancela la publicación en curso: espera.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Compilar y publicar el APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v5
+
+      - name: Instalar Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Instalar Flutter (canal estable)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      # La versión sale de pubspec.yaml (por ejemplo 0.1.0) y el número de
+      # compilación es el número de ejecución de este workflow (1, 2, 3...).
+      - name: Calcular la versión
+        id: version
+        run: |
+          name=$(grep '^version:' pubspec.yaml | sed -E 's/version: *([^+ ]+).*/\1/')
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "tag=v$name-build.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Compilar el APK (release)
+        run: flutter build apk --release --build-number=${{ github.run_number }}
+
+      - name: Publicar la Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk ws-movil.apk
+          gh release create "$TAG" ws-movil.apk \
+            --target "$GITHUB_SHA" \
+            --title "Mis tareas $TAG" \
+            --latest \
+            --notes "APK generado automáticamente desde el commit ${GITHUB_SHA::7}.
+
+          **Instalar en Android:** descarga \`ws-movil.apk\`, ábrelo y permite instalar apps desde el navegador si te lo pide.
+          Si ya tienes una versión anterior, desinstálala primero.
+
+          Usuario de prueba: \`admin\` / \`admin123\`."

@@ -78,3 +78,14 @@ jobs:
       - name: Build (APK debug)
         if: steps.proyecto.outputs.existe == 'true'
         run: flutter build apk --debug
+
+      # Guarda el APK como "artifact" de esta ejecución para poder probar el PR en
+      # el móvil (pestaña Actions → la ejecución → Artifacts). Caduca a los 7 días.
+      - name: Guardar el APK
+        if: steps.proyecto.outputs.existe == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: ws-movil-pr-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 7
+          if-no-files-found: error
